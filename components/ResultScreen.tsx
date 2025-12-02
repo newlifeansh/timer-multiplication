@@ -41,7 +41,7 @@ export default function ResultScreen({
   }
 
   return (
-    <div className='min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-gray-50 to-gray-100 p-4'>
+    <div className='min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-gray-50 to-gray-100' style={{ paddingLeft: '1cm', paddingRight: '1cm' }}>
       <div className='w-full max-w-md flex flex-col items-center gap-8'>
         {/* 결과 텍스트 */}
         <div className='text-center'>
@@ -55,7 +55,7 @@ export default function ResultScreen({
 
         {/* 액션 버튼 */}
         {showTwoButtons ? (
-          <div className='flex gap-4 w-full px-4'>
+          <div className='flex gap-4 w-full'>
             {/* 왼쪽: 나가기 버튼 (그레이) */}
             <button
               onClick={onHome}
