@@ -4,8 +4,8 @@ interface TimerProps {
 
 export default function Timer({ time }: TimerProps) {
   return (
-    <div className='flex items-center justify-center'>
-      <div className='text-6xl font-mono font-bold tracking-wider text-gray-900'>
+    <div className='flex items-center justify-center w-full'>
+      <div className='text-4xl sm:text-5xl md:text-6xl font-mono font-bold tracking-tight text-gray-900'>
         {time}
       </div>
     </div>
