@@ -80,7 +80,7 @@ export default function Home() {
 
       {/* 메인 컨텐츠 */}
       <div className='flex-1 flex items-center justify-center'>
-        <div className='w-full max-w-md flex flex-col items-center gap-12'>
+        <div className='w-full flex flex-col items-center gap-12'>
           {/* 타이머 영역 */}
           <div className='w-full flex justify-center'>
             <Timer time={time} />

@@ -42,7 +42,7 @@ export default function ResultScreen({
 
   return (
     <div className='min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-gray-50 to-gray-100' style={{ paddingLeft: '1cm', paddingRight: '1cm' }}>
-      <div className='w-full max-w-md flex flex-col items-center gap-8'>
+      <div className='w-full flex flex-col items-center gap-8'>
         {/* 결과 텍스트 */}
         <div className='text-center'>
           <h1 className={`text-5xl font-bold mb-4 ${success ? 'text-green-600' : 'text-red-600'}`}>
