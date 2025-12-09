@@ -1,102 +1,32 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useTimer, Stage } from '../hooks/useTimer'
-import Timer from '../components/Timer'
-import Button from '../components/Button'
-import Records from '../components/Records'
-import Result from '../components/Result'
-import Header from '../components/Header'
-import ResultScreen from '../components/ResultScreen'
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+
+const imgHome1 = 'http://localhost:3845/assets/c2d5d4650384dbfa9dfa5c844349788f526ba544.png'
+const imgImage1 = 'http://localhost:3845/assets/3c28cd3df8e9a746ee406f263a9c426867a1292d.png'
 
 export default function Home() {
-  const [currentStage, setCurrentStage] = useState<Stage>('normal')
-  const [showResultScreen, setShowResultScreen] = useState(false)
-
-  const {
-    time,
-    records,
-    buttonState,
-    start,
-    stop,
-    restart,
-    calculateResult,
-    isSuccess
-  } = useTimer(currentStage)
-
-  const result = calculateResult()
-  const success = isSuccess()
+  const router = useRouter()
 
   useEffect(() => {
-    if (result !== null && success !== null) {
-      setShowResultScreen(true)
-    }
-  }, [result, success])
+    const timer = setTimeout(() => {
+      router.push('/oobe')
+    }, 3000)
 
-  const handleButtonClick = () => {
-    if (buttonState === 'start') {
-      start()
-    } else if (buttonState === 'stop') {
-      stop()
-    } else if (buttonState === 'restart') {
-      restart()
-    }
-  }
-
-  const handleRetry = () => {
-    setShowResultScreen(false)
-    restart()
-  }
-
-  const handleHiddenStage = () => {
-    setCurrentStage('hidden')
-    setShowResultScreen(false)
-    restart()
-  }
-
-  const handleHome = () => {
-    setCurrentStage('normal')
-    setShowResultScreen(false)
-    restart()
-  }
-
-  if (showResultScreen && result !== null && success !== null) {
-    return (
-      <ResultScreen
-        success={success}
-        result={result}
-        stage={currentStage}
-        onRetry={handleRetry}
-        onHiddenStage={handleHiddenStage}
-        onHome={handleHome}
-      />
-    )
-  }
+    return () => clearTimeout(timer)
+  }, [router])
 
   return (
-    <div className='min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-gray-100' style={{ paddingLeft: '1cm', paddingRight: '1cm' }}>
-      {/* 최상단 헤더 */}
-      <Header stage={currentStage} />
-
-      {/* 메인 컨텐츠 */}
-      <div className='flex-1 flex items-center justify-center'>
-        <div className='w-full flex flex-col items-center gap-12'>
-          {/* 타이머 영역 */}
-          <div className='w-full flex justify-center'>
-            <Timer time={time} />
-          </div>
-
-          {/* 버튼 영역 */}
-          <div className='flex justify-center'>
-            <Button state={buttonState} onClick={handleButtonClick} />
-          </div>
-
-          {/* 정보 및 결과 영역 */}
-          <div className='w-full flex flex-col gap-6'>
-            <Records records={records} />
-            <Result result={result} />
-          </div>
-        </div>
+    <div className='bg-[#f8f8f8] relative w-full h-screen' data-name='home' data-node-id='3:7'>
+      <div className='absolute h-[290px] left-[-6px] top-[389px] w-[387px]' data-name='home 1' data-node-id='3:4122'>
+        <img alt='' className='absolute inset-0 max-w-none object-50%-50% object-cover pointer-events-none size-full' src={imgHome1} />
+      </div>
+      <p className='absolute bg-clip-text bg-gradient-to-r font-sans from-[#888888] leading-[normal] left-[66px] not-italic text-[20px] text-nowrap to-[#222222] top-[174px] whitespace-pre' data-node-id='3:4147' style={{ WebkitTextFillColor: 'transparent' }}>
+        Monthly dividend stocks
+      </p>
+      <div className='absolute h-[220px] left-[60px] top-[233px] w-[273px]' data-name='image 1' data-node-id='23:356'>
+        <img alt='' className='absolute inset-0 max-w-none object-50%-50% object-cover pointer-events-none size-full' src={imgImage1} />
       </div>
     </div>
   )
