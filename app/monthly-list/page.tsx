@@ -1,7 +1,18 @@
 'use client'
 
-import { useState, useRef, useEffect, Suspense } from 'react'
+import { useState, useRef, useEffect, Suspense, useMemo } from 'react'
 import { useSearchParams } from 'next/navigation'
+
+import ETFCard, { ETF } from '../../components/ETFCard'
+
+interface ETFDataResponse {
+  metadata: {
+    collectedAt: string
+    totalCount: number
+    version: string
+  }
+  etfs: ETF[]
+}
 
 const allMonths = [
   { id: 1, name: 'Jan', number: '1' },
@@ -21,31 +32,7 @@ const allMonths = [
 const filters = [
   { id: 'ranking', name: 'Dividend Ranking', active: true },
   { id: 'amount', name: 'Dividend Amount', active: false },
-  { id: 'fund', name: 'Operating Fund Size', active: false }
-]
-
-const etfData = [
-  {
-    id: 1,
-    ticker: 'JEPI',
-    name: 'JPMorgan Equity Premium Income ETF',
-    price: '0.37',
-    favorites: '1.2k'
-  },
-  {
-    id: 2,
-    ticker: 'SCHD',
-    name: 'Schwab U.S. Dividend Equity ETF',
-    price: '0.45',
-    favorites: '2.1k'
-  },
-  {
-    id: 3,
-    ticker: 'VYM',
-    name: 'Vanguard High Dividend Yield ETF',
-    price: '0.52',
-    favorites: '1.8k'
-  }
+  // { id: 'fund', name: 'Operating Fund Size', active: false } // Data unavailable
 ]
 
 function MonthlyListContent() {
@@ -55,15 +42,43 @@ function MonthlyListContent() {
   const monthsParam = searchParams.get('months')
 
   // 표시할 월 결정
-  const displayMonths =
-    monthsParam === 'all'
+  const displayMonths = useMemo(() => {
+    return monthsParam === 'all'
       ? allMonths
       : monthsParam
-      ? allMonths.filter((m) => monthsParam.split(',').includes(m.id.toString()))
-      : allMonths
+        ? allMonths.filter((m) => monthsParam.split(',').includes(m.id.toString()))
+        : allMonths
+  }, [monthsParam])
 
   const [selectedMonth, setSelectedMonth] = useState(displayMonths[0]?.id || 1)
+
+  // Update selectedMonth when displayMonths changes
+  useEffect(() => {
+    if (displayMonths.length > 0 && !displayMonths.find(m => m.id === selectedMonth)) {
+      setSelectedMonth(displayMonths[0].id)
+    }
+  }, [displayMonths, selectedMonth])
+
   const [activeFilter, setActiveFilter] = useState('ranking')
+  const [etfData, setEtfData] = useState<ETF[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  // Data Fetching
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('/data/etf_data.json')
+        const data: ETFDataResponse = await response.json()
+        setEtfData(data.etfs)
+      } catch (error) {
+        console.error('Failed to fetch ETF data:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchData()
+  }, [])
 
   // 선택된 월을 가운데로 스크롤
   useEffect(() => {
@@ -83,6 +98,25 @@ function MonthlyListContent() {
       }
     }
   }, [selectedMonth, displayMonths])
+
+  // Filtering and Sorting
+  const filteredEtfs = useMemo(() => {
+    if (!etfData.length) return []
+
+    let result = etfData.filter((etf) => etf.paymentMonths.includes(selectedMonth))
+
+    // Sort
+    result.sort((a, b) => {
+      if (activeFilter === 'ranking') {
+        return b.annualYield - a.annualYield
+      } else if (activeFilter === 'amount') {
+        return b.annualDividendPerShare - a.annualDividendPerShare
+      }
+      return 0
+    })
+
+    return result
+  }, [etfData, selectedMonth, activeFilter])
 
   return (
     <div className='bg-white relative w-full min-h-screen overflow-x-hidden' data-name='montly_list_selected'>
@@ -150,24 +184,21 @@ function MonthlyListContent() {
                 <div
                   key={month.id}
                   onClick={() => setSelectedMonth(month.id)}
-                  className={`shrink-0 w-[64px] h-[70px] rounded-[15px] flex flex-col items-center justify-center transition-colors snap-center cursor-pointer select-none ${
-                    isSelected
-                      ? 'bg-[rgba(255,170,4,0.8)]'
-                      : 'bg-white shadow-[0px_4px_32px_0px_rgba(0,0,0,0.04)]'
-                  }`}
+                  className={`shrink-0 w-[64px] h-[70px] rounded-[15px] flex flex-col items-center justify-center transition-colors snap-center cursor-pointer select-none ${isSelected
+                    ? 'bg-[rgba(255,170,4,0.8)]'
+                    : 'bg-white shadow-[0px_4px_32px_0px_rgba(0,0,0,0.04)]'
+                    }`}
                   style={{ scrollSnapAlign: 'center' }}
                 >
                   <p
-                    className={`text-[11px] font-normal mb-1 pointer-events-none ${
-                      isSelected ? 'text-[#805d19]' : 'text-[#24252c]'
-                    }`}
+                    className={`text-[11px] font-normal mb-1 pointer-events-none ${isSelected ? 'text-[#805d19]' : 'text-[#24252c]'
+                      }`}
                   >
                     {month.name}
                   </p>
                   <p
-                    className={`text-[19px] font-semibold pointer-events-none ${
-                      isSelected ? 'text-[#805d19]' : 'text-[#24252c]'
-                    }`}
+                    className={`text-[19px] font-semibold pointer-events-none ${isSelected ? 'text-[#805d19]' : 'text-[#24252c]'
+                      }`}
                   >
                     {month.number}
                   </p>
@@ -178,7 +209,9 @@ function MonthlyListContent() {
         </div>
 
         {/* Results count */}
-        <p className='px-[25px] text-[14px] font-bold text-[#838383] mb-4'>Total 123 results</p>
+        <p className='px-[25px] text-[14px] font-bold text-[#838383] mb-4'>
+          Total {filteredEtfs.length} results
+        </p>
 
         {/* Filter chips */}
         <div className='flex gap-2 px-[19px] mb-8 overflow-x-auto scrollbar-hide'>
@@ -186,11 +219,10 @@ function MonthlyListContent() {
             <button
               key={filter.id}
               onClick={() => setActiveFilter(filter.id)}
-              className={`shrink-0 px-[12px] py-[10px] h-[36px] rounded-[18px] border border-solid text-[13px] font-bold transition-colors ${
-                filter.id === activeFilter
-                  ? 'bg-white border-[#e6e6e6] text-[#af52de]'
-                  : 'bg-white border-[#e6e6e6] text-[#aaaaaa]'
-              }`}
+              className={`shrink-0 px-[12px] py-[10px] h-[36px] rounded-[18px] border border-solid text-[13px] font-bold transition-colors ${filter.id === activeFilter
+                ? 'bg-white border-[#e6e6e6] text-[#af52de]'
+                : 'bg-white border-[#e6e6e6] text-[#aaaaaa]'
+                }`}
             >
               {filter.name}
             </button>
@@ -199,36 +231,17 @@ function MonthlyListContent() {
 
         {/* ETF cards */}
         <div className='px-[19px] space-y-4'>
-          {etfData.map((etf) => (
-            <div
-              key={etf.id}
-              className='bg-white rounded-[15px] shadow-[0px_4px_32px_0px_rgba(0,0,0,0.04)] p-[20px] relative'
-            >
-              {/* Card Content - Figma gap-[16px] between sections */}
-              <div className='flex flex-col gap-[16px]'>
-                {/* Top Section: Ticker/Name and Favorites */}
-                <div className='flex items-center justify-between'>
-                  {/* Ticker and name - Figma gap-[7px] */}
-                  <div className='flex flex-col gap-[7px]'>
-                    <p className='text-[14px] font-bold text-[#24252c]'>{etf.ticker}</p>
-                    <p className='text-[11px] font-normal text-[#6e6a7c]'>{etf.name}</p>
-                  </div>
-
-                  {/* Favorites */}
-                  <div className='flex flex-col items-center'>
-                    <div className='w-[22px] h-[22px] text-red-500 leading-none'>♥</div>
-                    <p className='text-[10px] text-[#575757]'>{etf.favorites}</p>
-                  </div>
-                </div>
-
-                {/* Bottom Section: Dividends info and Price */}
-                <div className='flex justify-between items-center'>
-                  <p className='text-[13px] font-bold text-[#24252c]'>Dividends per share</p>
-                  <p className='text-[19px] font-bold text-[#34c759]'>$ {etf.price}</p>
-                </div>
-              </div>
-            </div>
-          ))}
+          {isLoading ? (
+            <div className='text-center py-10 text-gray-500'>Loading data...</div>
+          ) : (
+            filteredEtfs.map((etf, index) => (
+              <ETFCard
+                key={`${etf.fundSymbol}-${index}`}
+                etf={etf}
+                metricType={activeFilter as 'ranking' | 'amount'}
+              />
+            ))
+          )}
         </div>
       </div>
 
