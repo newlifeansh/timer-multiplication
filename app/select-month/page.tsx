@@ -36,9 +36,9 @@ export default function SelectMonth() {
   }
 
   return (
-    <div className='bg-white relative w-full min-h-screen' data-name='OOBE-case_each_details'>
-      {/* Status Bar */}
-      <div className='absolute left-0 top-0 w-[375px] bg-white'>
+    <div className='bg-white relative w-full min-h-screen flex flex-col items-center' data-name='OOBE-case_each_details'>
+      {/* Status Bar - 전체 너비 반응형 */}
+      <div className='w-full bg-white'>
         <div className='flex items-center justify-between px-[34px] py-[16px]'>
           <div className='text-sm font-semibold'>9:41</div>
           <div className='flex gap-[5px] items-center'>
@@ -57,18 +57,20 @@ export default function SelectMonth() {
         </div>
       </div>
 
-      {/* Title */}
-      <p className='absolute font-extrabold leading-normal left-[26px] text-[#35383e] text-[25px] top-[127px] w-[324px]'>
-        Choose the month you want.
-      </p>
+      {/* Content Container - 최대 375px, 가운데 정렬 */}
+      <div className='w-full max-w-[375px] px-[25px] flex flex-col'>
+        {/* Title */}
+        <p className='font-extrabold leading-normal text-[#35383e] text-[25px] mt-[73px] w-[324px]'>
+          Choose the month you want.
+        </p>
 
-      {/* Subtitle */}
-      <p className='absolute font-bold leading-normal left-[26px] text-[16px] text-[rgba(53,56,62,0.5)] top-[201px] w-[312px]'>
-        You can select multiple months.
-      </p>
+        {/* Subtitle */}
+        <p className='font-bold leading-normal text-[16px] text-[rgba(53,56,62,0.5)] mt-[20px] w-[312px]'>
+          You can select multiple months.
+        </p>
 
-      {/* Month grid */}
-      <div className='absolute flex flex-col gap-[19px] left-[25px] top-[246px] w-[325px]'>
+        {/* Month grid */}
+        <div className='flex flex-col gap-[19px] mt-[45px] w-[325px]'>
         {[0, 2, 4, 6, 8, 10].map((startIdx) => (
           <div key={startIdx} className='flex gap-[14px]'>
             {months.slice(startIdx, startIdx + 2).map((month) => {
@@ -100,15 +102,16 @@ export default function SelectMonth() {
         ))}
       </div>
 
-      {/* Confirm button */}
-      {selectedMonths.length > 0 && (
-        <button
-          onClick={handleConfirm}
-          className='fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-[#FFAA04] text-white font-bold px-8 py-4 rounded-full shadow-lg hover:bg-[#e69a03] transition-colors'
-        >
-          {selectedMonths.length}개월 선택 완료
-        </button>
-      )}
+        {/* Confirm button */}
+        {selectedMonths.length > 0 && (
+          <button
+            onClick={handleConfirm}
+            className='fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-[#FFAA04] text-white font-bold px-8 py-4 rounded-full shadow-lg hover:bg-[#e69a03] transition-colors z-50'
+          >
+            {selectedMonths.length}개월 선택 완료
+          </button>
+        )}
+      </div>
     </div>
   )
 }

@@ -119,41 +119,41 @@ function MonthlyListContent() {
   }, [etfData, selectedMonth, activeFilter])
 
   return (
-    <div className='bg-white relative w-full min-h-screen overflow-x-hidden' data-name='montly_list_selected'>
-      {/* Background decorative elements */}
-      <div className='absolute inset-0 overflow-hidden pointer-events-none'>
-        <div className='absolute w-[60px] h-[60px] bg-purple-200 rounded-full right-[42px] top-[232px] opacity-30' />
+    <div className='bg-white relative w-full min-h-screen overflow-x-hidden flex flex-col items-center' data-name='montly_list_selected'>
+      {/* Background decorative elements - 전체 화면 기준 */}
+      <div className='fixed inset-0 overflow-hidden pointer-events-none'>
+        <div className='absolute w-[60px] h-[60px] bg-purple-200 rounded-full right-[10%] top-[232px] opacity-30' />
         <div className='absolute w-[96px] h-[96px] bg-blue-200 rounded-full left-[-29px] top-[540px] opacity-30' />
-        <div className='absolute w-[74px] h-[74px] bg-pink-200 rounded-full left-[72px] top-[210px] opacity-30' />
-        <div className='absolute w-[58px] h-[58px] bg-yellow-200 rounded-full right-[135px] bottom-[45px] opacity-30' />
+        <div className='absolute w-[74px] h-[74px] bg-pink-200 rounded-full left-[10%] top-[210px] opacity-30' />
+        <div className='absolute w-[58px] h-[58px] bg-yellow-200 rounded-full right-[20%] bottom-[45px] opacity-30' />
         <div className='absolute w-[70px] h-[70px] bg-green-200 rounded-full left-[-16px] top-[-14px] opacity-30' />
-        <div className='absolute w-[118px] h-[118px] bg-indigo-200 rounded-full right-[71px] top-[331px] opacity-30' />
+        <div className='absolute w-[118px] h-[118px] bg-indigo-200 rounded-full right-[10%] top-[331px] opacity-30' />
       </div>
 
-      {/* Content */}
-      <div className='relative z-10 px-0 pb-8'>
-        {/* Header - Status Bar */}
-        <div className='bg-transparent flex flex-col items-center w-full'>
-          <div className='flex items-center justify-between px-[34px] py-[16px] w-full max-w-[375px]'>
-            <div className='text-sm font-semibold'>9:41</div>
-            <div className='flex gap-[5px] items-center'>
-              <svg width='17' height='10' viewBox='0 0 17 10' fill='none'>
-                <rect x='0.5' y='0.5' width='16' height='9' rx='1.5' fill='black' />
-                <path opacity='0.4' d='M17 4V6C17.5 5.66667 17.8 5 17.8 4.5C17.8 4 17.5 3.33333 17 3V4Z' fill='black' />
-              </svg>
-              <svg width='15' height='11' viewBox='0 0 15 11' fill='none'>
-                <path fillRule='evenodd' clipRule='evenodd' d='M0 5.5C0 2.46243 2.46243 0 5.5 0H9.5C12.5376 0 15 2.46243 15 5.5C15 8.53757 12.5376 11 9.5 11H5.5C2.46243 11 0 8.53757 0 5.5Z' fill='black' />
-              </svg>
-              <svg width='25' height='11' viewBox='0 0 25 11' fill='none'>
-                <rect x='0.5' y='0.5' width='24' height='10' rx='1.5' stroke='black' strokeOpacity='0.35' />
-                <rect x='2' y='2' width='21' height='7' rx='0.5' fill='black' />
-              </svg>
-            </div>
+      {/* Status Bar - 전체 너비 반응형 */}
+      <div className='w-full bg-white relative z-10'>
+        <div className='flex items-center justify-between px-[34px] py-[16px]'>
+          <div className='text-sm font-semibold'>9:41</div>
+          <div className='flex gap-[5px] items-center'>
+            <svg width='17' height='10' viewBox='0 0 17 10' fill='none'>
+              <rect x='0.5' y='0.5' width='16' height='9' rx='1.5' fill='black' />
+              <path opacity='0.4' d='M17 4V6C17.5 5.66667 17.8 5 17.8 4.5C17.8 4 17.5 3.33333 17 3V4Z' fill='black' />
+            </svg>
+            <svg width='15' height='11' viewBox='0 0 15 11' fill='none'>
+              <path fillRule='evenodd' clipRule='evenodd' d='M0 5.5C0 2.46243 2.46243 0 5.5 0H9.5C12.5376 0 15 2.46243 15 5.5C15 8.53757 12.5376 11 9.5 11H5.5C2.46243 11 0 8.53757 0 5.5Z' fill='black' />
+            </svg>
+            <svg width='25' height='11' viewBox='0 0 25 11' fill='none'>
+              <rect x='0.5' y='0.5' width='24' height='10' rx='1.5' stroke='black' strokeOpacity='0.35' />
+              <rect x='2' y='2' width='21' height='7' rx='0.5' fill='black' />
+            </svg>
           </div>
         </div>
+      </div>
 
+      {/* Content - 최대 375px, 가운데 정렬 */}
+      <div className='relative z-10 w-full max-w-[375px] pb-8'>
         {/* Month selector - 캐러셀 방식 */}
-        <div className='w-full max-w-[375px] mx-auto mt-8 mb-6'>
+        <div className='w-full mt-8 mb-6'>
           <div
             ref={scrollContainerRef}
             className='flex gap-3 px-3 overflow-x-scroll scrollbar-hide snap-x snap-mandatory scroll-smooth'

@@ -14,9 +14,9 @@ export default function Oobe() {
   }
 
   return (
-    <div className='bg-white relative w-full h-screen' data-name='OOBE'>
-      {/* Status Bar */}
-      <div className='absolute left-0 top-0 w-[375px] bg-white'>
+    <div className='bg-white relative w-full min-h-screen flex flex-col items-center' data-name='OOBE'>
+      {/* Status Bar - 전체 너비 반응형 */}
+      <div className='w-full bg-white'>
         <div className='flex items-center justify-between px-[34px] py-[16px]'>
           <div className='text-sm font-semibold'>9:41</div>
           <div className='flex gap-[5px] items-center'>
@@ -35,8 +35,8 @@ export default function Oobe() {
         </div>
       </div>
 
-      {/* Content Container - Figma gap-[50px] between title and options */}
-      <div className='absolute left-[18px] top-[127px] w-[341px] flex flex-col gap-[50px]'>
+      {/* Content Container - 최대 375px, 가운데 정렬 */}
+      <div className='w-full max-w-[375px] px-[18px] mt-[73px] flex flex-col gap-[50px]'>
         {/* Title and Subtitle - Figma gap-[11px] */}
         <div className='flex flex-col gap-[11px] w-[324px]'>
           <p className='font-extrabold leading-normal text-[#35383e] text-[25px]'>

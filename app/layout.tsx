@@ -17,6 +17,13 @@ export const metadata: Metadata = {
   description: "Find the ETF returns corresponding to the selected month.",
 };
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
